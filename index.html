@@ -130,17 +130,25 @@
                 return PLACEHOLDER_IMAGE;
             }
             
-            // Regex melhorada para extrair o ID de diferentes formatos de link do Google Drive
-            // Tenta corresponder a 'file/d/FILE_ID/' ou 'open?id=FILE_ID'
-            const regex = /drive\.google\.com\/(?:file\/d\/|open\?id=)([a-zA-Z0-9_-]{28,})/;
-            const match = url.match(regex);
+            // 1. (NOVO) Tenta extrair o 'src' de uma tag HTML <img ... src="URL">
+            // Isto é para links de thumbnail do Postimages
+            const htmlImgRegex = /src="([^"]+)"/;
+            const htmlMatch = url.match(htmlImgRegex);
+            if (htmlMatch && htmlMatch[1]) {
+                return htmlMatch[1]; // Retorna a URL capturada (ex: https://i.postimg.cc/...)
+            }
 
-            if (match && match[1]) {
-                const fileId = match[1];
+            // 2. (ANTIGO) Tenta extrair o ID de diferentes formatos de link do Google Drive
+            // Tenta corresponder a 'file/d/FILE_ID/' ou 'open?id=FILE_ID'
+            const googleRegex = /drive\.google\.com\/(?:file\/d\/|open\?id=)([a-zA-Z0-9_-]{28,})/;
+            const googleMatch = url.match(googleRegex);
+
+            if (googleMatch && googleMatch[1]) {
+                const fileId = googleMatch[1];
                 return `https://drive.google.com/uc?id=${fileId}`;
             }
 
-            // Fallback se o formato não for reconhecido, mas for um link
+            // 3. (FALLBACK) Fallback se o formato não for reconhecido, mas for um link direto
             if (url.startsWith('http')) return url;
 
             return PLACEHOLDER_IMAGE;
