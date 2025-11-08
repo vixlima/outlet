@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inforsolution Informática</title>
+    <!-- 1. Importando o Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Estilo para o loader */
+        #loader {
+            border: 8px solid #f3f3f3; /* Light grey */
+            border-top: 8px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Garante que o slider não transborde */
+        #slider-container {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+
+    <!-- ==== HEADER E MENU ==== -->
+    <header class="bg-gray-800 text-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center">
+            <a href="#" class="text-2xl font-bold hover:text-gray-300">
+                Inforsolution Informática
+            </a>
+            <!-- Links do menu serão injetados aqui -->
+            <div id="menu-links" class="flex flex-wrap justify-center sm:justify-end mt-4 sm:mt-0 space-x-2 sm:space-x-4">
+                 <a href="#" class="px-3 py-2 hover:bg-gray-700 rounded-md font-medium">Home</a>
+                 <!-- Links da planilha "MENU" irão aqui -->
+            </div>
+        </nav>
+    </header>
+
+    <!-- ==== BANNER DE DESTAQUE ==== -->
+    <div class="bg-amber-400 text-amber-900 text-center p-3 font-bold text-sm sm:text-base">
+        ATENÇÃO: Preço especial para venda de todo o lote! Entre em contato (27) 99774-9376
+    </div>
+    <!-- ==== FIM DO BANNER ==== -->
+
+    <!-- ==== CONTEÚDO PRINCIPAL ==== -->
+    <main class="container mx-auto p-6 min-h-screen">
+
+        <!-- 1. Indicador de Carregamento -->
+        <div id="loading-indicator" class="flex flex-col justify-center items-center h-64">
+            <div id="loader"></div>
+            <p class="mt-4 text-gray-600 text-lg">Carregando produtos da planilha...</p>
+        </div>
+
+        <!-- 2. Página da Grade de Produtos (Oculta inicialmente) -->
+        <div id="page-grid" class="hidden">
+            <h2 id="grid-title" class="text-3xl font-bold text-gray-800 mb-6">Todos os Produtos</h2>
+            <div id="product-grid-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Cards de produto serão injetados aqui -->
+            </div>
+        </div>
+
+        <!-- 3. Página de Detalhes do Produto (Oculta por padrão) -->
+        <div id="page-detail" class="hidden">
+            <a href="#" class="inline-block text-blue-600 hover:text-blue-800 mb-6">&larr; Voltar para todos os produtos</a>
+            <div id="product-detail-container" class="bg-white rounded-lg shadow-lg overflow-hidden grid grid-cols-1 md:grid-cols-2">
+                <!-- Conteúdo do detalhe do produto será injetado aqui -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ==== RODAPÉ ==== -->
+    <footer class="bg-gray-800 text-white text-center p-6 mt-12">
+        © 2025 Inforsolution Informática. Todos os direitos reservados.
+    </footer>
+
+    <!-- ==== BOTÃO FLUTUANTE DO WHATSAPP ==== -->
+    <a href="https://wa.me/5527997749763" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       class="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg z-50 transition-transform transform hover:scale-110"
+       title="Fale Conosco pelo WhatsApp">
+        <!-- Ícone SVG do WhatsApp -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-8 w-8" fill="white">
+            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.06 21.94L7.31 20.55C8.75 21.31 10.36 21.71 12.04 21.71C17.5 21.71 21.95 17.26 21.95 11.8C21.95 6.34 17.5 2 12.04 2M12.04 20.21C10.59 20.21 9.19 19.83 7.97 19.14L7.58 18.91L4.31 19.78L5.21 16.61L4.97 16.21C4.19 14.88 3.73 13.43 3.73 11.91C3.73 7.31 7.44 3.59 12.04 3.59C16.64 3.59 20.35 7.31 20.35 11.91C20.35 16.51 16.64 20.21 12.04 20.21M17.44 14.28C17.18 14.15 16.03 13.59 15.8 13.5C15.57 13.41 15.4 13.38 15.24 13.64C15.08 13.9 14.59 14.5 14.43 14.67C14.26 14.83 14.1 14.86 13.84 14.73C13.58 14.6 12.72 14.31 11.71 13.39C10.91 12.68 10.39 11.83 10.23 11.57C10.06 11.31 10.16 11.19 10.29 11.06C10.4 10.96 10.54 10.79 10.67 10.63C10.8 10.46 10.83 10.33 10.93 10.13C11.03 9.93 10.96 9.77 10.9 9.64C10.84 9.51 10.28 8.13 10.05 7.58C9.82 7.03 9.59 7.1 9.43 7.1C9.28 7.1 9.11 7.1 8.95 7.1C8.78 7.1 8.52 7.16 8.29 7.42C8.06 7.68 7.57 8.14 7.57 9.21C7.57 10.28 8.32 11.32 8.45 11.48C8.58 11.65 9.44 13.06 10.82 13.69C11.34 13.92 11.75 14.06 12.06 14.15C12.54 14.3 12.98 14.28 13.31 14.21C13.68 14.12 14.66 13.59 14.85 13.04C15.04 12.49 15.04 12.04 14.97 11.91"/>
+        </svg>
+    </a>
+
+    <!-- ==== SCRIPT PRINCIPAL (COMPLETO E CORRIGIDO) ==== -->
+    <script>
+        // ==== CONFIGURAÇÃO ====
+        const SHEET_ID = '143NdC02EB-fS6L-TuQNOUajb-0_fILtdgDJlsG9Xj3w';
+        const BASE_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=`;
+        const PLACEHOLDER_IMAGE = 'https://placehold.co/600x400/eeeeee/999999?text=Sem+Imagem';
+
+        // ==== ELEMENTOS DA UI ====
+        const loadingIndicator = document.getElementById('loading-indicator');
+        const pageGrid = document.getElementById('page-grid');
+        const pageDetail = document.getElementById('page-detail');
+        const productGridContainer = document.getElementById('product-grid-container');
+        const productDetailContainer = document.getElementById('product-detail-container');
+        const menuLinksContainer = document.getElementById('menu-links');
+        const gridTitle = document.getElementById('grid-title');
+
+        // "Banco de Dados" local para armazenar os dados da planilha
+        const db = {
+            products: [],
+            categories: []
+        };
+
+        // Variável global para o slider
+        let currentSlide = 0;
+        let totalSlides = 0;
+
+        // ==== FUNÇÕES AUXILIARES ====
+
+        /**
+         * Converte um link do Google Drive (compartilhado) para um link de imagem direta.
+         * @param {string} url - O link de compartilhamento do Google Drive
+         * @returns {string} O link da imagem direta
+         */
+        function convertDriveUrl(url) {
+            if (!url || typeof url !== 'string') {
+                return PLACEHOLDER_IMAGE;
+            }
+            
+            // Regex melhorada para extrair o ID de diferentes formatos de link do Google Drive
+            // Tenta corresponder a 'file/d/FILE_ID/' ou 'open?id=FILE_ID'
+            const regex = /drive\.google\.com\/(?:file\/d\/|open\?id=)([a-zA-Z0-9_-]{28,})/;
+            const match = url.match(regex);
+
+            if (match && match[1]) {
+                const fileId = match[1];
+                return `https://drive.google.com/uc?id=${fileId}`;
+            }
+
+            // Fallback se o formato não for reconhecido, mas for um link
+            if (url.startsWith('http')) return url;
+
+            return PLACEHOLDER_IMAGE;
+        }
+
+        /**
+         * Busca e processa os dados de uma aba específica da planilha.
+         * @param {string} sheetName - O nome da aba (ex: "MENU", "PRODUTOS")
+         * @returns {Promise<Array<Object>>} Uma promessa que resolve para um array de objetos
+         */
+        async function fetchGoogleSheet(sheetName) {
+            const url = `${BASE_URL}${encodeURIComponent(sheetName)}`;
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Falha ao carregar dados da planilha.');
+                
+                let text = await response.text();
+                
+                // Limpa a resposta JSONP do Google para obter o JSON puro
+                const jsonText = text.match(/google\.visualization\.Query\.setResponse\(([\s\S\w]+)\)/);
+                if (!jsonText || !jsonText[1]) throw new Error(`Resposta da planilha '${sheetName}' em formato inesperado.`);
+                
+                const data = JSON.parse(jsonText[1]);
+                
+                if (!data.table || !data.table.cols || !data.table.rows || data.table.rows.length === 0) {
+                    throw new Error(`Dados da planilha '${sheetName}' em formato inesperado ou vazios.`);
+                }
+
+                const table = data.table;
+
+                // *** CORREÇÃO IMPORTANTE ***
+                // Lê os cabeçalhos da *primeira linha de dados* (rows[0])
+                // Adicionada verificação (cell ? cell.v : null) para colunas de cabeçalho vazias
+                const headers = table.rows[0].c.map(cell => (cell ? cell.v : null));
+
+                // Mapeia as linhas para objetos, *começando da segunda linha* (slice(1))
+                const rows = table.rows.slice(1).map(row => {
+                    const item = {};
+                    // Garante que a linha (row) e as células (row.c) existem
+                    if (row && row.c) {
+                        row.c.forEach((cell, index) => {
+                            const header = headers[index];
+                            if (header) { 
+                                // Dá preferência ao valor formatado (cell.f) para preços, etc.
+                                // Isso captura "R$ 15.000,00" em vez de 15000
+                                item[header] = cell ? (cell.f ?? cell.v) : null;
+                            }
+                        });
+                    }
+                    return item;
+                });
+                
+                return rows;
+
+            } catch (error) {
+                console.error(`Erro ao buscar dados da aba "${sheetName}":`, error);
+                loadingIndicator.innerHTML = `<p class="text-red-500">Erro ao carregar dados. Tente novamente mais tarde.</p>`;
+                // Re-lança o erro para que o Promise.all falhe e pare a inicialização
+                throw error; 
+            }
+        }
+
+        // ==== FUNÇÕES DE RENDERIZAÇÃO ====
+        
+        /**
+         * Renderiza os links do menu de categorias
+         */
+        function renderMenu() {
+            // Adiciona o link "Home" estático primeiro
+            menuLinksContainer.innerHTML = '<a href="#" class="px-3 py-2 hover:bg-gray-700 rounded-md font-medium">Home</a>'; 
+            
+            // Adiciona as categorias da planilha "MENU"
+            // Adiciona um filtro para "NOME" não ser nulo
+            const validCategories = db.categories.filter(cat => cat.NOME);
+            
+            validCategories.forEach(category => {
+                if(category.NOME) {
+                    menuLinksContainer.innerHTML += `
+                        <a href="#/category/${encodeURIComponent(category.NOME)}" class="px-3 py-2 hover:bg-gray-700 rounded-md font-medium">${category.NOME}</a>
+                    `;
+                }
+            });
+        }
+
+
+        /**
+         * Renderiza a grade de produtos
+         * @param {Array<Object>} products - A lista de produtos para exibir
+         */
+        function renderProductGrid(products) {
+            productGridContainer.innerHTML = ''; // Limpa a grade
+
+            // Filtra produtos "vazios" que podem vir da planilha
+            const validProducts = products.filter(p => p.ID && p.NOME);
+
+            if (validProducts.length === 0) {
+                // Esta mensagem agora deve aparecer apenas se o filtro falhar
+                productGridContainer.innerHTML = `<p class="text-gray-600 col-span-full">Nenhum produto encontrado nesta categoria. Verifique se as colunas 'ID' e 'NOME' estão preenchidas na planilha.</p>`;
+                return;
+            }
+
+            validProducts.forEach(product => {
+                const cardLink = document.createElement('a');
+                cardLink.href = `#/product/${product.ID}`;
+                cardLink.className = 'bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 relative group';
+
+                const isSold = product.STATUS && product.STATUS.toUpperCase() === 'VENDIDO';
+                
+                // *** ALTERAÇÃO PARA PREÇO RISCADO (strikethrough) ***
+                const priceClass = isSold 
+                    ? 'text-gray-400 line-through text-xl font-bold mt-1' // Se VENDIDO
+                    : 'text-green-600 text-xl font-bold mt-1'; // Se DISPONÍVEL
+
+                // *** ALTERAÇÃO COR DO TÍTULO (NOVO) ***
+                const titleClass = isSold
+                    ? 'text-lg font-semibold text-gray-400 truncate' // Se VENDIDO
+                    : 'text-lg font-semibold text-gray-900 truncate'; // Se DISPONÍVEL
+
+                cardLink.innerHTML = `
+                    ${isSold ? '<div class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">VENDIDO</div>' : ''}
+                    <div class="w-full h-48 bg-gray-200 overflow-hidden">
+                        <img src="${convertDriveUrl(product.FOTO_CAPA)}" alt="${product.NOME}" 
+                             class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${isSold ? 'grayscale' : ''}"
+                             onerror="this.src='${PLACEHOLDER_IMAGE}'">
+                    </div>
+                    <div class="p-4">
+                        <!-- Título com classe dinâmica -->
+                        <h3 class="${titleClass}" title="${product.NOME}">${product.NOME}</h3>
+                        <!-- Preço estilizado com classe dinâmica -->
+                        <p class="${priceClass}">${product.PRECO ?? 'Consulte'}</p>
+                    </div>
+                `;
+                productGridContainer.appendChild(cardLink);
+            });
+        }
+
+        /**
+         * Renderiza a página de detalhes de um produto
+         * @param {Object} product - O objeto do produto
+         */
+        function renderProductDetail(product) {
+            const isSold = product.STATUS && product.STATUS.toUpperCase() === 'VENDIDO';
+            const statusText = isSold ? 'VENDIDO' : 'DISPONÍVEL';
+            const statusClass = isSold ? 'bg-red-500' : 'bg-green-500';
+
+            // *** ALTERAÇÃO PARA PREÇO RISCADO (strikethrough) ***
+            const priceClass = isSold 
+                ? 'text-gray-400 line-through text-3xl font-bold my-5' // Se VENDIDO
+                : 'text-green-600 text-3xl font-bold my-5'; // Se DISPONÍVEL
+
+            // *** ALTERAÇÃO COR DO TÍTULO (NOVO) ***
+            const titleClass = isSold
+                ? 'text-3xl font-bold text-gray-400 mb-3' // Se VENDIDO
+                : 'text-3xl font-bold text-gray-900 mb-3'; // Se DISPONÍVEL
+
+            // Processa as fotos do slide
+            let slideImages = [];
+            // Adiciona a foto de capa primeiro
+            const mainImage = convertDriveUrl(product.FOTO_CAPA);
+            slideImages.push(mainImage);
+
+            // Adiciona as fotos extras, se existirem
+            if (product.FOTOS_SLIDES && product.FOTOS_SLIDES.trim() !== '') {
+                const extraImages = product.FOTOS_SLIDES.split(',')
+                                         .map(url => convertDriveUrl(url.trim()))
+                                         .filter(url => url !== mainImage); // Evita duplicatas da capa
+                slideImages.push(...extraImages);
+            }
+            
+            // Reseta as variáveis globais do slider
+            currentSlide = 0;
+            totalSlides = slideImages.length;
+
+            let slidesHtml = slideImages.map((imgUrl, index) => `
+                <div class="w-full h-full flex-shrink-0" data-slide="${index}">
+                    <img src="${imgUrl}" alt="Foto ${index + 1} de ${product.NOME}" 
+                         class="w-full h-full object-contain" 
+                         onerror="this.src='${PLACEHOLDER_IMAGE}'">
+                </div>
+            `).join('');
+
+            let dotsHtml = totalSlides > 1 ? slideImages.map((_, index) => `
+                <button class="w-3 h-3 rounded-full ${index === 0 ? 'bg-blue-600' : 'bg-gray-300'}" data-dot="${index}"></button>
+            `).join('') : '';
+
+            productDetailContainer.innerHTML = `
+                <!-- Coluna da Galeria -->
+                <div class="w-full p-4 md:p-6">
+                    <div class="relative w-full h-96 bg-gray-100 rounded-lg overflow-hidden" id="slider-container">
+                        <!-- A largura da track é (Nº de slides * 100%) -->
+                        <!-- CORREÇÃO: Removido o 'width' calculado, o flex fará o trabalho -->
+                        <div class="flex transition-transform duration-500 ease-in-out h-full" id="slider-track" style="transform: translateX(0%);">
+                            ${slidesHtml}
+                        </div>
+                        ${totalSlides > 1 ? `
+                        <button id="prev-slide" class="absolute top-1/2 left-2 -translate-y-1/2 bg-white/70 hover:bg-white rounded-full p-2 shadow-md">&larr;</button>
+                        <button id="next-slide" class="absolute top-1/2 right-2 -translate-y-1/2 bg-white/70 hover:bg-white rounded-full p-2 shadow-md">&rarr;</button>
+                        ` : ''}
+                    </div>
+                    <div class="flex justify-center gap-2 mt-4" id="slider-dots">
+                        ${dotsHtml}
+                    </div>
+                </div>
+                
+                <!-- Coluna de Informações -->
+                <div class="w-full p-6">
+                    <!-- Título com classe dinâmica -->
+                    <h2 class="${titleClass}">${product.NOME}</h2>
+                    <span class="px-3 py-1 rounded-full text-white font-semibold text-sm ${statusClass}">${statusText}</span>
+                    
+                    <!-- Preço estilizado com classe dinâmica -->
+                    <p class="${priceClass}">${product.PRECO ?? 'Preço sob consulta'}</p>
+                    
+                    <h4 class="text-lg font-semibold text-gray-800 mt-6 mb-2">Descrição</h4>
+                    <p class="text-gray-600 whitespace-pre-line">${product.DESCRICAO || 'Sem descrição detalhada.'}</p>
+                    
+                    <!-- Botão de WhatsApp com mensagem pré-preenchida -->
+                    <a href="https://wa.me/5527997749763?text=${encodeURIComponent(`Olá, tenho interesse no produto: ${product.NOME} (ID: ${product.ID})`)}" 
+                       target="_blank" 
+                       rel="noopener noreferrer"
+                       class="mt-8 inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.06 21.94L7.31 20.55C8.75 21.31 10.36 21.71 12.04 21.71C17.5 21.71 21.95 17.26 21.95 11.8C21.95 6.34 17.5 2 12.04 2M12.04 20.21C10.59 20.21 9.19 19.83 7.97 19.14L7.58 18.91L4.31 19.78L5.21 16.61L4.97 16.21C4.19 14.88 3.73 13.43 3.73 11.91C3.73 7.31 7.44 3.59 12.04 3.59C16.64 3.59 20.35 7.31 20.35 11.91C20.35 16.51 16.64 20.21 12.04 20.21M17.44 14.28C17.18 14.15 16.03 13.59 15.8 13.5C15.57 13.41 15.4 13.38 15.24 13.64C15.08 13.9 14.59 14.5 14.43 14.67C14.26 14.83 14.1 14.86 13.84 14.73C13.58 14.6 12.72 14.31 11.71 13.39C10.91 12.68 10.39 11.83 10.23 11.57C10.06 11.31 10.16 11.19 10.29 11.06C10.4 10.96 10.54 10.79 10.67 10.63C10.8 10.46 10.83 10.33 10.93 10.13C11.03 9.93 10.96 9.77 10.9 9.64C10.84 9.51 10.28 8.13 10.05 7.58C9.82 7.03 9.59 7.1 9.43 7.1C9.28 7.1 9.11 7.1 8.95 7.1C8.78 7.1 8.52 7.16 8.29 7.42C8.06 7.68 7.57 8.14 7.57 9.21C7.57 10.28 8.32 11.32 8.45 11.48C8.58 11.65 9.44 13.06 10.82 13.69C11.34 13.92 11.75 14.06 12.06 14.15C12.54 14.3 12.98 14.28 13.31 14.21C13.68 14.12 14.66 13.59 14.85 13.04C15.04 12.49 15.04 12.04 14.97 11.91"/>
+                        </svg>
+                        Consultar por WhatsApp
+                    </a>
+                </div>
+            `;
+        }
+        
+        /**
+         * Atualiza o slider para mostrar o slide correto
+         */
+        function updateSlider() {
+            const track = document.getElementById('slider-track');
+            const dots = document.querySelectorAll('#slider-dots button');
+            
+            if (track) {
+                // Move a 'track' para a esquerda
+                // CORREÇÃO: A percentagem deve ser 100% por slide
+                const percentage = currentSlide * 100;
+                track.style.transform = `translateX(-${percentage}%)`;
+            }
+            
+            dots.forEach((dot, index) => {
+                if (index === currentSlide) {
+                    dot.classList.add('bg-blue-600');
+                    dot.classList.remove('bg-gray-300');
+                } else {
+                    dot.classList.remove('bg-blue-600');
+                    dot.classList.add('bg-gray-300');
+                }
+            });
+        }
+        
+        /**
+         * Adiciona os event listeners para o slider
+         */
+        function setupSliderListeners() {
+            const prevButton = document.getElementById('prev-slide');
+            const nextButton = document.getElementById('next-slide');
+            const dotsContainer = document.getElementById('slider-dots');
+            
+            if (prevButton) {
+                prevButton.onclick = () => {
+                    currentSlide = (currentSlide > 0) ? currentSlide - 1 : totalSlides - 1;
+                    updateSlider();
+                };
+            }
+            
+            if (nextButton) {
+                nextButton.onclick = () => {
+                    currentSlide = (currentSlide < totalSlides - 1) ? currentSlide + 1 : 0;
+                    updateSlider();
+                };
+            }
+            
+            if (dotsContainer) {
+                dotsContainer.onclick = (e) => {
+                    // Garante que o clique foi num botão de ponto
+                    if (e.target.tagName === 'BUTTON' && e.target.dataset.dot) {
+                        currentSlide = parseInt(e.target.dataset.dot);
+                        updateSlider();
+                    }
+                };
+            }
+        }
+
+
+        // ==== ROTEADOR (GERENCIADOR DE PÁGINAS) ====
+
+        /**
+         * Controla qual "página" (div) é exibida com base na hash da URL.
+         */
+        function handleHashChange() {
+            const hash = window.location.hash;
+
+            if (hash.startsWith('#/product/')) {
+                // --- Exibe a Página de Detalhes ---
+                const productId = hash.split('/')[2];
+                // Usar '==' para comparar ID da planilha (pode ser número) com ID da URL (string)
+                const product = db.products.find(p => p.ID == productId);
+
+                if (product) {
+                    renderProductDetail(product);
+                    setupSliderListeners(); // Adiciona os listeners DEPOIS de renderizar
+                    pageGrid.classList.add('hidden');
+                    pageDetail.classList.remove('hidden');
+                    window.scrollTo(0, 0); // Rola para o topo
+                } else {
+                    console.warn(`Produto com ID "${productId}" não encontrado.`);
+                    window.location.hash = '#'; // Volta para a home
+                }
+
+            } else if (hash.startsWith('#/category/')) {
+                // --- Exibe a Grade Filtrada ---
+                const categoryName = decodeURIComponent(hash.split('/')[2]);
+                const filteredProducts = db.products.filter(p => p.CATEGORIA === categoryName);
+                
+                renderProductGrid(filteredProducts);
+                gridTitle.textContent = `Categoria: ${categoryName}`;
+                pageGrid.classList.remove('hidden');
+                pageDetail.classList.add('hidden');
+
+            } else {
+                // --- Exibe a Grade Principal (Home) ---
+                renderProductGrid(db.products);
+                gridTitle.textContent = 'Todos os Produtos';
+                pageGrid.classList.remove('hidden');
+                pageDetail.classList.add('hidden');
+            }
+        }
+
+        // ==== INICIALIZAÇÃO ====
+
+        /**
+         * Função principal de inicialização da aplicação.
+         */
+        async function initializeApp() {
+            try {
+                // Mostra o loading
+                loadingIndicator.classList.remove('hidden');
+                pageGrid.classList.add('hidden');
+                pageDetail.classList.add('hidden');
+
+                // Busca os dados das duas abas em paralelo
+                const [categoriesData, productsData] = await Promise.all([
+                    fetchGoogleSheet('MENU'),
+                    fetchGoogleSheet('PRODUTOS')
+                ]);
+                
+                db.categories = categoriesData;
+                db.products = productsData; // Armazena os dados brutos
+                
+                // Renderiza os componentes iniciais
+                renderMenu();
+                
+                // Processa a rota atual (hash)
+                handleHashChange();
+
+            } catch (error) {
+                console.error("Erro ao inicializar a aplicação:", error);
+                loadingIndicator.innerHTML = `<p class="text-red-500 font-bold">Falha ao carregar o site. Verifique o console.</p>`;
+            } finally {
+                // Esconde o loading
+                loadingIndicator.classList.add('hidden');
+                // A função handleHashChange já torna a página correta visível
+            }
+        }
+
+        // --- Event Listeners ---
+
+        // Inicia a aplicação quando o DOM estiver pronto
+        document.addEventListener('DOMContentLoaded', initializeApp);
+
+        // Ouve mudanças na hash (navegação)
+        window.addEventListener('hashchange', handleHashChange);
+    </script>
+</body>
+</html>
